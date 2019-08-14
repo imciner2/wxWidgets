@@ -105,6 +105,9 @@ public:
     virtual bool IsChecked() const { return m_isChecked; }
     void Toggle() { Check(!m_isChecked); }
 
+    virtual void Show(bool show = true) { m_isShown = show; }
+    virtual bool IsShown() const { return m_isShown; }
+
     // help string (displayed in the status bar by default)
     void SetHelp(const wxString& str);
     const wxString& GetHelp() const { return m_help; }
@@ -160,6 +163,7 @@ protected:
     wxItemKind    m_kind;           // separator/normal/check/radio item?
     bool          m_isChecked;      // is checked?
     bool          m_isEnabled;      // is enabled?
+    bool          m_isShown;        // is shown?
 
     // this ctor is for the derived classes only, we're never created directly
     wxMenuItemBase(wxMenu *parentMenu = NULL,

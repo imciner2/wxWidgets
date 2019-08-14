@@ -722,6 +722,18 @@ void wxMenuItem::Enable( bool enable )
     wxMenuItemBase::Enable( enable );
 }
 
+void wxMenuItem::Show( bool show )
+{
+    wxCHECK_RET( m_menuItem, wxT("invalid menu item") );
+
+    if ( show )
+        gtk_widget_show( m_menuItem );
+    else
+        gtk_widget_hide( m_menuItem );
+
+    wxMenuItemBase::Show( show );
+}
+
 bool wxMenuItem::IsChecked() const
 {
     wxCHECK_MSG( m_menuItem, false, wxT("invalid menu item") );

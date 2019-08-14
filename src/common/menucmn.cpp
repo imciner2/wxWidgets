@@ -268,6 +268,7 @@ wxMenuItemBase::wxMenuItemBase(wxMenu *parentMenu,
     m_subMenu     = subMenu;
     m_isEnabled   = true;
     m_isChecked   = false;
+    m_isShown     = true;
     m_kind        = kind;
 
     SetItemLabel(text);
@@ -623,6 +624,8 @@ void wxMenuBase::UpdateUI(wxEvtHandler* source)
                     Check(itemid, event.GetChecked());
                 if (event.GetSetEnabled())
                     Enable(itemid, event.GetEnabled());
+                if (event.GetSetShown())
+                    Show(itemid, event.GetShown());
             }
 
             // recurse to the submenus
@@ -804,6 +807,24 @@ bool wxMenuBase::IsChecked( int itemid ) const
     wxCHECK_MSG( item, false, wxT("wxMenu::IsChecked: no such item") );
 
     return item->IsChecked();
+}
+
+void wxMenuBase::Show( int itemid, bool show )
+{
+    wxMenuItem *item = FindItem(itemid);
+
+    wxCHECK_RET( item, wxT("wxMenu::Show: no such item") );
+
+    item->Show(show);
+}
+
+bool wxMenuBase::IsShown( int itemid ) const
+{
+    wxMenuItem *item = FindItem(itemid);
+
+    wxCHECK_MSG( item, false, wxT("wxMenu::IsShown: no such item") );
+
+    return item->IsShown();
 }
 
 void wxMenuBase::SetLabel( int itemid, const wxString &label )

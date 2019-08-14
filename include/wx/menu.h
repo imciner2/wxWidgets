@@ -234,6 +234,9 @@ public:
     void Check(int itemid, bool check);
     bool IsChecked(int itemid) const;
 
+    void Show( int itemid, bool show );
+    bool IsShown( int itemid ) const;
+
     void SetLabel(int itemid, const wxString& label);
     wxString GetLabel(int itemid) const;
 

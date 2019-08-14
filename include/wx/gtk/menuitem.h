@@ -30,6 +30,7 @@ public:
     virtual void SetItemLabel( const wxString& str ) wxOVERRIDE;
     virtual void Enable( bool enable = true ) wxOVERRIDE;
     virtual void Check( bool check = true ) wxOVERRIDE;
+    virtual void Show( bool show = true ) wxOVERRIDE;
     virtual bool IsChecked() const wxOVERRIDE;
     virtual void SetBitmap(const wxBitmap& bitmap);
     virtual const wxBitmap& GetBitmap() const { return m_bitmap; }
