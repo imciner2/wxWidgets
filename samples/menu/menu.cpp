@@ -102,6 +102,7 @@ protected:
     void OnInsertMenuItem(wxCommandEvent& event);
     void OnCheckMenuItem(wxCommandEvent& event);
     void OnEnableMenuItem(wxCommandEvent& event);
+    void OnShowMenuItem(wxCommandEvent& event);
     void OnGetLabelMenuItem(wxCommandEvent& event);
 #if wxUSE_TEXTDLG
     void OnSetLabelMenuItem(wxCommandEvent& event);
@@ -281,6 +282,7 @@ enum
     Menu_Menu_DeleteSub,
     Menu_Menu_Enable,
     Menu_Menu_Check,
+    Menu_Menu_Show,
     Menu_Menu_GetLabel,
 #if wxUSE_TEXTDLG
     Menu_Menu_SetLabel,
@@ -353,6 +355,7 @@ wxBEGIN_EVENT_TABLE(MyFrame, wxFrame)
     EVT_MENU(Menu_Menu_DeleteSub, MyFrame::OnDeleteSubMenu)
     EVT_MENU(Menu_Menu_Enable,    MyFrame::OnEnableMenuItem)
     EVT_MENU(Menu_Menu_Check,     MyFrame::OnCheckMenuItem)
+    EVT_MENU(Menu_Menu_Show,      MyFrame::OnShowMenuItem)
     EVT_MENU(Menu_Menu_GetLabel,  MyFrame::OnGetLabelMenuItem)
 #if wxUSE_TEXTDLG
     EVT_MENU(Menu_Menu_SetLabel,  MyFrame::OnSetLabelMenuItem)
@@ -592,6 +595,8 @@ MyFrame::MyFrame()
                      "Enable or disable the last menu item", true);
     menuMenu->Append(Menu_Menu_Check, "&Check menu item\tAlt-C",
                      "Check or uncheck the last menu item", true);
+    menuMenu->Append(Menu_Menu_Show, "&Show menu item\tAlt-H",
+                     "Show or hide the last menu item", true);
     menuMenu->AppendSeparator();
     menuMenu->Append(Menu_Menu_GetInfo, "Get menu item in&fo\tAlt-F",
                      "Show the state of the last menu item");
@@ -657,6 +662,7 @@ MyFrame::MyFrame()
     menuBar->Check(Menu_MenuBar_Enable, true);
     menuBar->Check(Menu_Menu_Enable, true);
     menuBar->Check(Menu_Menu_Check, false);
+    menuBar->Check(Menu_Menu_Show, true);
 
     // associate the menu bar with the frame
     SetMenuBar(menuBar);
@@ -995,8 +1001,18 @@ void MyFrame::OnCheckMenuItem(wxCommandEvent& WXUNUSED(event))
 
     if (item && item->IsCheckable())
     {
-    item->Toggle();
+        item->Toggle();
+    }
 }
+
+void MyFrame::OnShowMenuItem(wxCommandEvent& WXUNUSED(event))
+{
+    wxMenuItem *item = GetLastMenuItem();
+
+    if ( item )
+    {
+        item->Show(!item->IsShown());
+    }
 }
 
 void MyFrame::OnUpdateCheckMenuItemUI(wxUpdateUIEvent& event)
