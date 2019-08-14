@@ -125,6 +125,14 @@ public:
     virtual void Enable(bool enable = true);
 
     /**
+        Show or hide the menu item.
+
+        @onlyfor{wxgtk}
+        @since 3.1.3
+     */
+    virtual void Show(bool show = true);
+
+    /**
         @deprecated This function is deprecated; please use GetLabelText() instead.
 
         @see GetLabelText()
@@ -312,6 +320,14 @@ public:
         Returns @true if the item is enabled.
     */
     virtual bool IsEnabled() const;
+
+    /**
+        Returns @true if the item is visible
+
+        @onlyfor{wxgtk}
+        @since 3.1.3
+    */
+    virtual bool IsShown() const;
 
     /**
         Returns @true if the item is a radio button.
