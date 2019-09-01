@@ -1551,6 +1551,14 @@ bool wxWindowBase::RemoveEventHandler(wxEvtHandler *handlerToRemove)
 
 bool wxWindowBase::HandleWindowEvent(wxEvent& event) const
 {
+    if ( event.GetEventType() == wxEVT_KEY_DOWN )
+            wxLogDebug( "Key event" );
+
+    if ( event.GetEventType() ==  wxEVT_LEFT_DOWN )
+            wxLogDebug( "Mouse down event" );
+    if ( event.GetEventType() ==  wxEVT_LEFT_UP )
+            wxLogDebug( "Mouse Up event" );
+
     // SafelyProcessEvent() will handle exceptions nicely
     return GetEventHandler()->SafelyProcessEvent(event);
 }

@@ -38,6 +38,9 @@ static const int wxGTK_TITLE_ID = -3;
 static bool wxGetGtkAccel(const wxMenuItem*, guint*, GdkModifierType*);
 #endif
 
+// Record if the last event was accompanied by a key press or not
+static bool keyPressed = false;
+
 // Unity hack: under Ubuntu Unity the global menu bar is not affected by a
 // modal dialog being shown, so the user can select a menu item before hiding
 // the dialog and, in particular, a new instance of the same dialog can be
@@ -538,7 +541,11 @@ static void menuitem_activate(GtkWidget*, wxMenuItem* item)
     }
 
     wxMenu* menu = item->GetMenu();
-    menu->SendEvent(id, item->IsCheckable() ? item->IsChecked() : -1);
+
+    if ( keyPressed )
+        menu->SendEvent(id, item->IsCheckable() ? item->IsChecked() : -1, wxCommandEvent::KEYBOARD);
+    else
+        menu->SendEvent(id, item->IsCheckable() ? item->IsChecked() : -1, wxCommandEvent::MOUSE);
 
     // A lot of existing code, including any program that closes its main
     // window from a menu handler and expects the program to exit -- as our own
@@ -756,6 +763,27 @@ static void menu_hide(GtkWidget*, wxMenu* menu)
     menu->m_popupShown = false;
     DoCommonMenuCallbackCode(menu, event);
 }
+
+// "key-release-event"
+static bool menu_keyrelease(GtkWidget*, GdkEventKey*, wxMenu* menu)
+{
+    wxLogDebug( "Menu key release" );
+    // A key was most recently pressed
+    keyPressed = true;
+
+    return false;
+}
+
+// "buttom-release-event"
+static bool menu_buttonrelease(GtkWidget*, GdkEventKey*, wxMenu* menu)
+{
+    wxLogDebug( "Menu button release" );
+    // A button was most recently pressed
+    keyPressed = false;
+
+    return false;
+}
+
 }
 
 // "can_activate_accel" from menu item
@@ -774,6 +802,12 @@ void wxMenu::Init()
 
     m_accel = gtk_accel_group_new();
     m_menu = gtk_menu_new();
+
+    // Enable the keyboard and mouse events
+    gtk_widget_set_events(m_menu, GDK_KEY_PRESS_MASK |
+                                  GDK_KEY_RELEASE_MASK |
+                                  GDK_BUTTON_PRESS_MASK |
+                                  GDK_BUTTON_RELEASE_MASK);
     g_object_ref_sink(m_menu);
 
     m_owner = NULL;
@@ -802,6 +836,8 @@ void wxMenu::Init()
     // "show" occurs for sub-menus which are not showing, so use "map" instead
     g_signal_connect(m_menu, "map", G_CALLBACK(menu_map), this);
     g_signal_connect(m_menu, "hide", G_CALLBACK(menu_hide), this);
+    g_signal_connect(m_menu, "key-release-event", G_CALLBACK(menu_keyrelease), this);
+    g_signal_connect(m_menu, "button-release-event", G_CALLBACK(menu_buttonrelease), this);
 }
 
 wxMenu::~wxMenu()

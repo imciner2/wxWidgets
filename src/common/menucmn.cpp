@@ -635,10 +635,11 @@ void wxMenuBase::UpdateUI(wxEvtHandler* source)
     }
 }
 
-bool wxMenuBase::SendEvent(int itemid, int checked)
+bool wxMenuBase::SendEvent(int itemid, int checked, wxCommandEvent::wxEventSource eventSource)
 {
     wxCommandEvent event(wxEVT_MENU, itemid);
     event.SetInt(checked);
+    event.SetEventSource(eventSource);
 
     return DoProcessEvent(this, event, GetWindow());
 }

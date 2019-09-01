@@ -733,7 +733,19 @@ void MyFrame::LogMenuEvent(const wxCommandEvent& event)
 {
     int id = event.GetId();
 
-    wxString msg = wxString::Format("Menu command %d", id);
+    wxString msg;
+    switch ( event.GetEventSource() )
+    {
+        case wxCommandEvent::UNSPECIFIED:
+            msg = wxString::Format("Menu command %d via unspecified", id);
+            break;
+        case wxCommandEvent::MOUSE:
+            msg = wxString::Format("Menu command %d via mouse", id);
+            break;
+        case wxCommandEvent::KEYBOARD:
+            msg = wxString::Format("Menu command %d via keyboard", id);
+            break;
+    }
 
     // catch all checkable menubar items and also the check item from the popup
     // menu

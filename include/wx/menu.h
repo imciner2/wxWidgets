@@ -309,7 +309,8 @@ public:
     // false otherwise
     //
     // the checked parameter may have boolean value or -1 for uncheckable items
-    bool SendEvent(int itemid, int checked = -1);
+    bool SendEvent(int itemid, int checked = -1,
+                   wxCommandEvent::wxEventSource eventSource = wxCommandEvent::UNSPECIFIED);
 
     // called to dispatch a wxMenuEvent to the right recipients, menu pointer
     // can be NULL if we failed to find the associated menu (this happens at

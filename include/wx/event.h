@@ -1533,12 +1533,21 @@ class WXDLLIMPEXP_CORE wxCommandEvent : public wxEvent,
                                         public wxEventBasicPayloadMixin
 {
 public:
+    // Event source
+    enum wxEventSource
+    {
+        UNSPECIFIED = 0,
+        MOUSE,
+        KEYBOARD
+    };
+
     wxCommandEvent(wxEventType commandType = wxEVT_NULL, int winid = 0)
         : wxEvent(winid, commandType)
     {
         m_clientData = NULL;
         m_clientObject = NULL;
         m_isCommandEvent = true;
+        m_eventSource = UNSPECIFIED;
 
         // the command events are propagated upwards by default
         m_propagationLevel = wxEVENT_PROPAGATE_MAX;
@@ -1548,7 +1557,8 @@ public:
         : wxEvent(event),
           wxEventBasicPayloadMixin(event),
           m_clientData(event.m_clientData),
-          m_clientObject(event.m_clientObject)
+          m_clientObject(event.m_clientObject),
+          m_eventSource(event.m_eventSource)
     {
         // Because GetString() can retrieve the string text only on demand, we
         // need to copy it explicitly.
@@ -1563,6 +1573,10 @@ public:
     // Set/Get client object from controls
     void SetClientObject(wxClientData* clientObject) { m_clientObject = clientObject; }
     wxClientData *GetClientObject() const { return m_clientObject; }
+
+    // Set/Get the event source
+    void SetEventSource(wxEventSource eventSource) { m_eventSource = eventSource; }
+    wxEventSource GetEventSource() const { return m_eventSource; }
 
     // Note: this shadows wxEventBasicPayloadMixin::GetString(), because it does some
     // GUI-specific hacks
@@ -1583,6 +1597,8 @@ public:
 protected:
     void*             m_clientData;    // Arbitrary client data
     wxClientData*     m_clientObject;  // Arbitrary client object
+    wxEventSource     m_eventSource;   // Source of the command event
+
 
 private:
 

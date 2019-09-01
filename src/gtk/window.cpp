@@ -1177,6 +1177,7 @@ gtk_window_key_press_callback( GtkWidget *WXUNUSED(widget),
                                GdkEventKey *gdk_event,
                                wxWindow *win )
 {
+  wxLogDebug("main key press");
     if (g_blockEventsOnDrag)
         return FALSE;
 
