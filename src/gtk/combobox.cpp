@@ -162,7 +162,7 @@ bool wxComboBox::Create( wxWindow *parent, wxWindowID id, const wxString& value,
 
     if ( entry )
     {
-        if (style & wxCB_READONLY)
+        if ( HasFlag(wxCB_READONLY) )
         {
             // this will assert and do nothing if the value is not in our list
             // of strings which is the desired behaviour (for consistency with
