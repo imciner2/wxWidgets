@@ -58,6 +58,7 @@ enum
     ChoicePage_AddText,
     ChoicePage_AddSeveral,
     ChoicePage_AddMany,
+    ChoicePage_AddSeparator,
     ChoicePage_Clear,
     ChoicePage_Change,
     ChoicePage_ChangeText,
@@ -94,6 +95,7 @@ protected:
     void OnButtonAdd(wxCommandEvent& event);
     void OnButtonAddSeveral(wxCommandEvent& event);
     void OnButtonAddMany(wxCommandEvent& event);
+    void OnButtonAddSeparator(wxCommandEvent& event);
 
     void OnChoice(wxCommandEvent& event);
 
@@ -148,6 +150,7 @@ wxBEGIN_EVENT_TABLE(ChoiceWidgetsPage, WidgetsPage)
     EVT_BUTTON(ChoicePage_Add, ChoiceWidgetsPage::OnButtonAdd)
     EVT_BUTTON(ChoicePage_AddSeveral, ChoiceWidgetsPage::OnButtonAddSeveral)
     EVT_BUTTON(ChoicePage_AddMany, ChoiceWidgetsPage::OnButtonAddMany)
+    EVT_BUTTON(ChoicePage_AddSeparator, ChoiceWidgetsPage::OnButtonAddSeparator)
     EVT_BUTTON(ChoicePage_ContainerTests, ItemContainerWidgetsPage::OnButtonTestItemContainer)
 
     EVT_TEXT_ENTER(ChoicePage_AddText, ChoiceWidgetsPage::OnButtonAdd)
@@ -233,6 +236,9 @@ void ChoiceWidgetsPage::CreateContent()
     btn = new wxButton(this, ChoicePage_AddMany, "Add &many strings");
     sizerMiddle->Add(btn, 0, wxALL | wxGROW, 5);
 
+    btn = new wxButton(this, ChoicePage_AddSeparator, "Add separator item");
+    sizerMiddle->Add(btn, 0, wxALL | wxGROW, 5);
+
     sizerRow = new wxBoxSizer(wxHORIZONTAL);
     btn = new wxButton(this, ChoicePage_Change, "C&hange current");
     m_textChange = new wxTextCtrl(this, ChoicePage_ChangeText, wxEmptyString);
@@ -258,7 +264,7 @@ void ChoiceWidgetsPage::CreateContent()
 
     // right pane
     wxSizer *sizerRight = new wxBoxSizer(wxVERTICAL);
-    m_choice = new wxChoice(this, ChoicePage_Choice);
+    m_choice = new wxChoice(this, ChoicePage_Choice, wxDefaultPosition, wxDefaultSize, 0, NULL, wxCB_SEPARATORS);
     sizerRight->Add(m_choice, 0, wxALL | wxGROW, 5);
     sizerRight->SetMinSize(150, 0);
     m_sizerChoice = sizerRight; // save it to modify it later
@@ -382,6 +388,11 @@ void ChoiceWidgetsPage::OnButtonAddMany(wxCommandEvent& WXUNUSED(event))
         strings.Add(wxString::Format("item #%u", n));
     }
     m_choice->Append(strings);
+}
+
+void ChoiceWidgetsPage::OnButtonAddSeparator(wxCommandEvent& WXUNUSED(event))
+{
+    m_choice->Append("---");
 }
 
 void ChoiceWidgetsPage::OnButtonAddSeveral(wxCommandEvent& WXUNUSED(event))

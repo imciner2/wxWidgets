@@ -65,6 +65,7 @@ enum
     ComboPage_SetFirstText,
     ComboPage_AddSeveral,
     ComboPage_AddMany,
+    ComboPage_AddSeparator,
     ComboPage_Clear,
     ComboPage_Change,
     ComboPage_ChangeText,
@@ -117,6 +118,7 @@ protected:
     void OnButtonSetFirst(wxCommandEvent& event);
     void OnButtonAddSeveral(wxCommandEvent& event);
     void OnButtonAddMany(wxCommandEvent& event);
+    void OnButtonAddSeparator(wxCommandEvent& event);
     void OnButtonSetValue(wxCommandEvent& event);
     void OnButtonSetCurrent(wxCommandEvent& event);
 
@@ -155,6 +157,7 @@ protected:
     // the checkboxes for styles
     wxCheckBox *m_chkSort,
                *m_chkReadonly,
+               *m_chkSeparators,
                *m_chkProcessEnter;
 
     // the combobox itself and the sizer it is in
@@ -192,6 +195,7 @@ wxBEGIN_EVENT_TABLE(ComboboxWidgetsPage, WidgetsPage)
     EVT_BUTTON(ComboPage_SetFirst, ComboboxWidgetsPage::OnButtonSetFirst)
     EVT_BUTTON(ComboPage_AddSeveral, ComboboxWidgetsPage::OnButtonAddSeveral)
     EVT_BUTTON(ComboPage_AddMany, ComboboxWidgetsPage::OnButtonAddMany)
+    EVT_BUTTON(ComboPage_AddSeparator, ComboboxWidgetsPage::OnButtonAddSeparator)
     EVT_BUTTON(ComboPage_SetValue, ComboboxWidgetsPage::OnButtonSetValue)
     EVT_BUTTON(ComboPage_SetCurrent, ComboboxWidgetsPage::OnButtonSetCurrent)
     EVT_BUTTON(ComboPage_ContainerTests, ItemContainerWidgetsPage::OnButtonTestItemContainer)
@@ -245,6 +249,7 @@ ComboboxWidgetsPage::ComboboxWidgetsPage(WidgetsBookCtrl *book,
     // init everything
     m_chkSort =
     m_chkReadonly =
+    m_chkSeparators =
     m_chkProcessEnter = (wxCheckBox *)NULL;
 
     m_combobox = (wxComboBox *)NULL;
@@ -280,6 +285,7 @@ void ComboboxWidgetsPage::CreateContent()
 
     m_chkSort = CreateCheckBoxAndAddToSizer(sizerLeftTop, "&Sort items");
     m_chkReadonly = CreateCheckBoxAndAddToSizer(sizerLeftTop, "&Read only");
+    m_chkSeparators = CreateCheckBoxAndAddToSizer(sizerLeftTop, "&Allow separators");
     m_chkProcessEnter = CreateCheckBoxAndAddToSizer(sizerLeftTop, "Process &Enter");
 
     sizerLeftTop->Add(5, 5, 0, wxGROW | wxALL, 5); // spacer
@@ -345,6 +351,9 @@ void ComboboxWidgetsPage::CreateContent()
     sizerMiddle->Add(btn, 0, wxALL | wxGROW, 5);
 
     btn = new wxButton(this, ComboPage_AddMany, "Append &many strings");
+    sizerMiddle->Add(btn, 0, wxALL | wxGROW, 5);
+
+    btn = new wxButton(this, ComboPage_AddSeparator, "Add separator item");
     sizerMiddle->Add(btn, 0, wxALL | wxGROW, 5);
 
     sizerRow = CreateSizerWithTextAndButton(ComboPage_Change,
@@ -425,6 +434,8 @@ void ComboboxWidgetsPage::CreateCombo()
         flags |= wxCB_SORT;
     if ( m_chkReadonly->GetValue() )
         flags |= wxCB_READONLY;
+    if ( m_chkSeparators->GetValue() )
+        flags |= wxCB_SEPARATORS;
     if ( m_chkProcessEnter->GetValue() )
         flags |= wxTE_PROCESS_ENTER;
 
@@ -586,6 +597,11 @@ void ComboboxWidgetsPage::OnButtonAddSeveral(wxCommandEvent& WXUNUSED(event))
     m_combobox->Append("First");
     m_combobox->Append("another one");
     m_combobox->Append("and the last (very very very very very very very very very very long) one");
+}
+
+void ComboboxWidgetsPage::OnButtonAddSeparator(wxCommandEvent& WXUNUSED(event))
+{
+    m_combobox->Append("---");
 }
 
 void ComboboxWidgetsPage::OnUpdateUIInsertionPointText(wxUpdateUIEvent& event)
