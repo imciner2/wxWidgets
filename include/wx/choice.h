@@ -57,12 +57,22 @@ public:
     // override wxItemContainer::IsSorted
     virtual bool IsSorted() const wxOVERRIDE { return HasFlag(wxCB_SORT); }
 
+    // Get if this control allows separators in the list
+    virtual bool AllowsSeparators() const { return HasFlag(wxCB_SEPARATORS); }
+
+    // Set/get the string used to define a separator item
+    virtual void SetSeparatorString(const wxString& sepString) { m_separatorString = sepString; }
+    virtual wxString GetSeparatorString() const { return m_separatorString; }
+
 protected:
     // The generic implementation doesn't determine the height correctly and
     // doesn't account for the width of the arrow but does take into account
     // the string widths, so the derived classes should override it and set the
     // height and add the arrow width to the size returned by this version.
     virtual wxSize DoGetBestSize() const wxOVERRIDE;
+
+    // The string that represents a separator item (only used in the wxCB_SEPARATORS style)
+    wxString m_separatorString;
 
 private:
     wxDECLARE_NO_COPY_CLASS(wxChoiceBase);

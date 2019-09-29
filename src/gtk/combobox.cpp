@@ -60,6 +60,31 @@ gtkcombobox_popupshown_callback(GObject *WXUNUSED(gobject),
     }
 }
 
+// Function called to determine if the item is a separator item or a normal item
+// returning true means a separator, false means a regular item
+static gboolean
+gtk_row_separator_function( GtkTreeModel *model, GtkTreeIter *iter, void* data )
+{
+    gchar* strItem;
+    gboolean result = false;
+    wxComboBox* control = static_cast<wxComboBox*>(data);
+
+    // Get the data string of the item currently being examined
+    gtk_tree_model_get(model, iter, 0, &strItem, -1);
+
+    // strItem should be created by the gtk_tree_model_get function
+    // but we should make sure we actually have data before continuing
+    if ( !strItem )
+        return false;
+
+    // Test if the current item is the same as the separator string
+    result = control->GetSeparatorString().IsSameAs(strItem);
+
+    g_free(strItem);
+
+    return result;
+}
+
 }
 
 //-----------------------------------------------------------------------------
@@ -189,6 +214,16 @@ bool wxComboBox::Create( wxWindow *parent, wxWindowID id, const wxString& value,
     {
         g_signal_connect (m_widget, "notify::popup-shown",
                           G_CALLBACK (gtkcombobox_popupshown_callback), this);
+    }
+
+    // Set the default separator
+    SetSeparatorString(wxS("---"));
+
+    if ( AllowsSeparators() )
+    {
+        // Connect the separator function if the widget supports separators
+        gtk_combo_box_set_row_separator_func((GtkComboBox*) m_widget,
+                                             gtk_row_separator_function, this, NULL);
     }
 
     return true;
