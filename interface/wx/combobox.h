@@ -47,7 +47,14 @@
            overriding the default handling, pressing Enter key is either
            processed internally by the control or used to activate the default
            button of the dialog, if any.
+    @style{wxCB_SEPARATORS}
+           Enables separator entries in the list.
+           By default, @c "---" entries will be converted to separators.
+           This style is incompatible with @c wxCB_SORT and must be set during creation.
+           @since 3.1.4
+
     @endStyleTable
+
 
     @beginEventEmissionTable{wxCommandEvent}
     @event{EVT_COMBOBOX(id, func)}
@@ -314,5 +321,37 @@ public:
     virtual void SetString(unsigned int n, const wxString& text);
 
     virtual unsigned int GetCount() const;
+
+    /**
+        Returns if this combo box has separators enabled
+        (it must have been created using the @c wxCB_SEPARATORS style).
+
+        @return True if separators are enabled
+        @since 3.1.4
+        @see SetSeparatorString(), GetSeparatorString()
+    */
+    virtual bool AllowsSeparators() const;
+
+    /**
+        Sets the item string that is converted into a separator.
+        Any items that match this string will be automatically converted into separators
+        if the control has the @c wxCB_SEPARATORS style.
+
+        @param sepString
+            String that defines the separator items
+
+        @since 3.1.4
+        @see AllowsSeparators(), GetSeparatorString()
+    */
+    virtual void SetSeparatorString(const wxString& sepString);
+
+    /**
+        Returns the current string used to find the items to convert into separators.
+
+        @return The current separator string
+        @since 3.1.4
+        @see AllowsSeparators(), SetSeparatorString()
+    */
+    virtual wxString GetSeparatorString() const;
 };
 

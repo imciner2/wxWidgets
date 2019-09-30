@@ -15,7 +15,14 @@
     @beginStyleTable
     @style{wxCB_SORT}
            Sorts the entries alphabetically.
+    @style{wxCB_SEPARATORS}
+       Enables separator entries in the list.
+       By default, @c "---" entries will be converted to separators.
+       This style is incompatible with @c wxCB_SORT and must be set during creation.
+       @since 3.1.4
+
     @endStyleTable
+
 
     @beginEventEmissionTable{wxCommandEvent}
     @event{EVT_CHOICE(id, func)}
@@ -171,6 +178,11 @@ public:
     */
     virtual void SetColumns(int n = 1);
 
+    /**
+        Returns if this choice control will sort the entries alphabetically (has the @c wxCB_SORT style).
+
+        @return True if sorting is enabled
+    */
     virtual bool IsSorted() const;
 
     virtual unsigned int GetCount() const ;
@@ -180,5 +192,37 @@ public:
     virtual int FindString(const wxString& s, bool bCase = false) const;
     virtual wxString GetString(unsigned int n) const ;
     virtual void SetString(unsigned int pos, const wxString& s);
+
+    /**
+        Returns if this choice control has separators enabled
+        (it must have been created using the @c wxCB_SEPARATORS style).
+
+        @return True if separators are enabled
+        @since 3.1.4
+        @see SetSeparatorString(), GetSeparatorString()
+    */
+    virtual bool AllowsSeparators() const;
+
+    /**
+        Sets the item string that is converted into a separator.
+        Any items that match this string will be automatically converted into separators
+        if the control has the @c wxCB_SEPARATORS style.
+
+        @param sepString
+            String that defines the separator items
+
+        @since 3.1.4
+        @see AllowsSeparators(), GetSeparatorString()
+    */
+    virtual void SetSeparatorString(const wxString& sepString);
+
+    /**
+        Returns the current string used to find the items to convert into separators.
+
+        @return The current separator string
+        @since 3.1.4
+        @see AllowsSeparators(), SetSeparatorString()
+    */
+    virtual wxString GetSeparatorString() const;
 };
 
