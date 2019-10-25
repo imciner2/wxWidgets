@@ -109,7 +109,18 @@ public:
 
     void InsertItem( size_t pos, int itemid, const wxString& text) wxOVERRIDE
     {
-        m_popUpMenu->Insert( pos, itemid, text );
+        wxChoice* wxpeer = static_cast<wxChoice*>( GetWXPeer() );
+        if ( wxpeer )
+        {
+            if ( wxpeer->AllowsSeparators() && wxpeer->GetSeparatorString().IsSameAs( text ) )
+                m_popUpMenu->InsertSeparator( pos );
+            else
+                m_popUpMenu->Insert( pos, itemid, text );
+        }
+        else
+        {
+            m_popUpMenu->Insert( pos, itemid, text );
+        }
     }
 
     size_t GetNumberOfItems() const wxOVERRIDE
