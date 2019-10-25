@@ -116,9 +116,6 @@ bool wxChoice::Create( wxWindow *parent, wxWindowID id,
     g_signal_connect_after (m_widget, "changed",
                             G_CALLBACK (gtk_choice_changed_callback), this);
 
-    // Set the default separator
-    SetSeparatorString(wxS("---"));
-
     if ( AllowsSeparators() )
     {
         // Connect the separator function if the widget supports separators

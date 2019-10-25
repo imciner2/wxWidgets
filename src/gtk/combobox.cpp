@@ -216,9 +216,6 @@ bool wxComboBox::Create( wxWindow *parent, wxWindowID id, const wxString& value,
                           G_CALLBACK (gtkcombobox_popupshown_callback), this);
     }
 
-    // Set the default separator
-    SetSeparatorString(wxS("---"));
-
     if ( AllowsSeparators() )
     {
         // Connect the separator function if the widget supports separators

@@ -99,6 +99,12 @@ wxCONSTRUCTOR_4( wxChoice, wxWindow*, Parent, wxWindowID, Id, \
 // implementation
 // ============================================================================
 
+wxChoiceBase::wxChoiceBase()
+{
+    // Set the default separator
+    m_separatorString = wxS("---");
+}
+
 wxChoiceBase::~wxChoiceBase()
 {
     // this destructor is required for Darwin
