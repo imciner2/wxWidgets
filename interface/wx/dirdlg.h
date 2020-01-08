@@ -5,8 +5,13 @@
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#define wxDD_CHANGE_DIR         0x0100
-#define wxDD_DIR_MUST_EXIST     0x0200
+enum {
+    wxDD_CHANGE_DIR     = 0x0100,
+    wxDD_DIR_MUST_EXIST = 0x0200,
+    wxDD_MULTIPLE       = 0x0400,
+    wxDD_SHOW_HIDDEN    = 0x0001
+}
+
 #define wxDD_NEW_DIR_BUTTON     0 // deprecated, on by default now,
 
 #define wxDD_DEFAULT_STYLE      (wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER)
@@ -43,6 +48,9 @@ const char wxDirDialogNameStr[] = "wxDirCtrl";
     @style{wxDD_CHANGE_DIR}
            Change the current working directory to the directory chosen by the
            user.
+    @style{wxDD_SHOW_HIDDEN}
+           Show hidden and system folders.
+           @since{3.1.4}
     @endStyleTable
 
     Notice that @c wxRESIZE_BORDER has special side effect under Windows
