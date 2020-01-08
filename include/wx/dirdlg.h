@@ -25,8 +25,11 @@ extern WXDLLIMPEXP_DATA_CORE(const char) wxDirDialogNameStr[];
 extern WXDLLIMPEXP_DATA_CORE(const char) wxDirDialogDefaultFolderStr[];
 extern WXDLLIMPEXP_DATA_CORE(const char) wxDirSelectorPromptStr[];
 
-#define wxDD_CHANGE_DIR         0x0100
-#define wxDD_DIR_MUST_EXIST     0x0200
+enum {
+    wxDD_CHANGE_DIR     = 0x0100,
+    wxDD_DIR_MUST_EXIST = 0x0200,
+    wxDD_MULTIPLE       = 0x0400
+};
 
 // deprecated, on by default now, use wxDD_DIR_MUST_EXIST to disable it
 #define wxDD_NEW_DIR_BUTTON     0
@@ -75,6 +78,7 @@ public:
 
     virtual wxString GetMessage() const { return m_message; }
     virtual wxString GetPath() const { return m_path; }
+    virtual void GetPaths(wxArrayString& paths) const { paths.Empty(); paths.Add(m_path); }
 
 protected:
     wxString m_message;
