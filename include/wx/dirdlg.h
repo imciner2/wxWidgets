@@ -25,10 +25,23 @@ extern WXDLLIMPEXP_DATA_CORE(const char) wxDirDialogNameStr[];
 extern WXDLLIMPEXP_DATA_CORE(const char) wxDirDialogDefaultFolderStr[];
 extern WXDLLIMPEXP_DATA_CORE(const char) wxDirSelectorPromptStr[];
 
+
+/*
+    The flags below must coexist with the following flags in m_windowStyle
+    #define wxCAPTION               0x20000000
+    #define wxMAXIMIZE              0x00002000
+    #define wxCLOSE_BOX             0x00001000
+    #define wxSYSTEM_MENU           0x00000800
+    wxBORDER_NONE   =               0x00200000
+    #define wxRESIZE_BORDER         0x00000040
+    #define wxDIALOG_NO_PARENT      0x00000020
+*/
+
 enum {
     wxDD_CHANGE_DIR     = 0x0100,
     wxDD_DIR_MUST_EXIST = 0x0200,
-    wxDD_MULTIPLE       = 0x0400
+    wxDD_MULTIPLE       = 0x0400,
+    wxDD_SHOW_HIDDEN    = 0x0001
 };
 
 // deprecated, on by default now, use wxDD_DIR_MUST_EXIST to disable it
