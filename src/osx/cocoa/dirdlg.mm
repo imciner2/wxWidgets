@@ -48,7 +48,7 @@ void wxDirDialog::Create(wxWindow *parent, const wxString& message,
 {
     m_parent = parent;
 
-    SetMessage( message );
+    SetMessage(message);
     SetWindowStyle(style);
     SetPath(defaultPath);
     m_sheetDelegate = [[ModalDialogDelegate alloc] init];
@@ -62,25 +62,30 @@ wxDirDialog::~wxDirDialog()
 
 WX_NSOpenPanel wxDirDialog::OSXCreatePanel() const
 {
-    NSOpenPanel *oPanel = [NSOpenPanel openPanel];
+    NSOpenPanel* oPanel = [NSOpenPanel openPanel];
     [oPanel setCanChooseDirectories:YES];
     [oPanel setResolvesAliases:YES];
     [oPanel setCanChooseFiles:NO];
 
-    wxCFStringRef cf( m_message );
+    wxCFStringRef cf(m_message);
     [oPanel setMessage:cf.AsNSString()];
 
     if ( !HasFlag(wxDD_DIR_MUST_EXIST) )
         [oPanel setCanCreateDirectories:YES];
 
+    if ( HasFlag(wxDD_MULTIPLE) )
+        [oPanel setAllowsMultipleSelection:YES];
+
+    if ( HasFlag(wxDD_SHOW_HIDDEN) )
+        [oPanel setShowsHiddenFiles:YES];
+
+    // Set the directory to use
+    wxCFStringRef dir(m_path);
+    NSURL* dirUrl = [NSURL fileURLWithPath: dir.AsNSString() isDirectory: YES];
+    [oPanel setDirectoryURL: dirUrl];
+
     return oPanel;
 }
-
-// We use several deprecated methods of NSOpenPanel in the code below, we
-// should replace them with newer equivalents now that we don't support OS X
-// versions which didn't have them (pre 10.6), but until then, get rid of
-// the warning.
-wxGCC_WARNING_SUPPRESS(deprecated-declarations)
 
 void wxDirDialog::ShowWindowModal()
 {
@@ -96,11 +101,11 @@ void wxDirDialog::ShowWindowModal()
     NSOpenPanel *oPanel = OSXCreatePanel();
 
     NSWindow* nativeParent = parentWindow->GetWXWindow();
-    wxCFStringRef dir( m_path );
-    [oPanel beginSheetForDirectory:dir.AsNSString() file:nil types: nil
-        modalForWindow: nativeParent modalDelegate: m_sheetDelegate
-        didEndSelector: @selector(sheetDidEnd:returnCode:contextInfo:)
-        contextInfo: nil];
+
+    // Create the window and have it call the ModalFinishedCallback on completion
+    [oPanel beginSheetModalForWindow: nativeParent completionHandler: ^(NSModalResponse returnCode){
+        [(ModalDialogDelegate*)m_sheetDelegate sheetDidEnd: oPanel returnCode: returnCode contextInfo: nil];
+    }];
 }
 
 int wxDirDialog::ShowModal()
@@ -109,21 +114,17 @@ int wxDirDialog::ShowModal()
 
     wxCFEventLoopPauseIdleEvents pause;
 
-    NSOpenPanel *oPanel = OSXCreatePanel();
-
-    wxCFStringRef dir( m_path );
-
-    m_path.clear();
+    NSOpenPanel* oPanel = OSXCreatePanel();
 
     int returnCode = -1;
-    
+
     OSXBeginModalDialog();
 
-    returnCode = (NSInteger)[oPanel runModalForDirectory:dir.AsNSString() file:nil types:nil];
+    // Display the panel and process the result on completion
+    returnCode = (NSInteger)[oPanel runModal];
     ModalFinishedCallback(oPanel, returnCode);
-    
-    OSXEndModalDialog();
 
+    OSXEndModalDialog();
 
     return GetReturnCode();
 }
@@ -132,18 +133,35 @@ void wxDirDialog::ModalFinishedCallback(void* panel, int returnCode)
 {
     int result = wxID_CANCEL;
 
-    if (returnCode == NSOKButton )
+    if ( returnCode == NSOKButton )
     {
         NSOpenPanel* oPanel = (NSOpenPanel*)panel;
-        SetPath( wxCFStringRef::AsStringWithNormalizationFormC([[oPanel filenames] objectAtIndex:0]));
+
+        NSArray<NSURL*>* selectedURL = [oPanel URLs];
+
+        for ( NSURL* url in selectedURL )
+        {
+            m_paths.Add([url fileSystemRepresentation]);
+        }
+
         result = wxID_OK;
     }
     SetReturnCode(result);
 
-    if (GetModality() == wxDIALOG_MODALITY_WINDOW_MODAL)
-        SendWindowModalDialogEvent ( wxEVT_WINDOW_MODAL_DIALOG_CLOSED  );
+    if ( GetModality() == wxDIALOG_MODALITY_WINDOW_MODAL )
+        SendWindowModalDialogEvent(wxEVT_WINDOW_MODAL_DIALOG_CLOSED);
 }
 
-wxGCC_WARNING_RESTORE(deprecated-declarations)
+wxString wxDirDialog::GetPath() const
+{
+    return m_paths.Last();
+}
+
+void wxDirDialog::GetPaths(wxArrayString& paths) const
+{
+    paths.Empty();
+    paths = m_paths;
+}
+
 
 #endif // wxUSE_DIRDLG
