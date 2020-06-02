@@ -130,7 +130,7 @@ public:
     virtual wxString GetPath() const;
 
     /**
-        Fills the array @a paths with the full paths of the files chosen.
+        Fills the array @a paths with the full paths of the chosen directories.
 
         @note This function should only be used with the dialogs which have @c wxDD_MULTIPLE style,
               use GetPath() for the others.

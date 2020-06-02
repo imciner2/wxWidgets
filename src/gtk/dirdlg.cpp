@@ -148,9 +148,9 @@ void wxDirDialog::GTKOnAccept()
     while ( fnamesi )
     {
         wxString dir(wxString::FromUTF8(static_cast<gchar *>(fnamesi->data)));
-        m_paths.Add( dir );
+        m_paths.Add(dir);
 
-        g_free( fnamesi->data );
+        g_free(fnamesi->data);
         fnamesi = fnamesi->next;
     }
 
