@@ -48,9 +48,13 @@ const char wxDirDialogNameStr[] = "wxDirCtrl";
     @style{wxDD_CHANGE_DIR}
            Change the current working directory to the directory chosen by the
            user.
+           @note This flag is ignored if the @c wxDD_MULTIPLE style is also used
+    @style{wxDD_MULTIPLE}
+           Allow the user to select multiple directories.
+           @since 3.1.4
     @style{wxDD_SHOW_HIDDEN}
            Show hidden and system folders.
-           @since{3.1.4}
+           @since 3.1.4
     @endStyleTable
 
     Notice that @c wxRESIZE_BORDER has special side effect under Windows
@@ -119,8 +123,21 @@ public:
 
     /**
         Returns the default or user-selected path.
+
+        @note This function should not be used with dialogs which have the @c wxDD_MULTIPLE style,
+              use GetPaths() instead.
     */
     virtual wxString GetPath() const;
+
+    /**
+        Fills the array @a paths with the full paths of the files chosen.
+
+        @note This function should only be used with the dialogs which have @c wxDD_MULTIPLE style,
+              use GetPath() for the others.
+
+        @since 3.1.4
+    */
+    virtual void GetPaths(wxArrayString& paths) const;
 
     /**
         Sets the message that will be displayed on the dialog.

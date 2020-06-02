@@ -48,6 +48,8 @@ void wxDirDialog::Create(wxWindow *parent, const wxString& message,
 {
     m_parent = parent;
 
+    wxASSERT( !( HasFlag(wxDD_MULTIPLE) && HasFlag(wxDD_CHANGE_DIR) ) );
+
     SetMessage(message);
     SetWindowStyle(style);
     SetPath(defaultPath);
@@ -169,6 +171,7 @@ void wxDirDialog::SetTitle(const wxString &title)
 
 wxString wxDirDialog::GetPath() const
 {
+    wxCHECK_MSG( !HasFlag(wxDD_MULTIPLE), wxEmptyString, wxT("GetPath called when wxDD_MULTIPLE defined") );
     return m_paths.Last();
 }
 

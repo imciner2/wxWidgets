@@ -71,6 +71,8 @@ bool wxDirDialog::Create(wxWindow* parent,
 {
     m_message = title;
 
+    wxASSERT( !( HasFlag(wxDD_MULTIPLE) && HasFlag(wxDD_CHANGE_DIR) ) );
+
     parent = GetParentForModalDialog(parent, style);
 
     if (!PreCreation(parent, pos, wxDefaultSize) ||
@@ -155,7 +157,7 @@ void wxDirDialog::GTKOnAccept()
     g_slist_free(fnames);
 
     // change to the directory where the user went if asked
-    if ( HasFlag(wxDD_CHANGE_DIR) )
+    if ( !HasFlag(wxDD_MULTIPLE) && HasFlag(wxDD_CHANGE_DIR) )
     {
         wxSetWorkingDirectory(m_paths.Last());
     }
@@ -187,6 +189,7 @@ void wxDirDialog::SetPath(const wxString& dir)
 
 wxString wxDirDialog::GetPath() const
 {
+    wxCHECK_MSG( !HasFlag(wxDD_MULTIPLE), wxEmptyString, wxT("GetPath called when wxDD_MULTIPLE defined") );
     return m_paths.Last();
 }
 
