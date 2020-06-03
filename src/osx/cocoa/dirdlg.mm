@@ -148,7 +148,7 @@ void wxDirDialog::ModalFinishedCallback(void* panel, int returnCode)
     {
         NSOpenPanel* oPanel = (NSOpenPanel*)panel;
 
-        NSArray<NSURL*>* selectedURL = [oPanel URLs];
+        NSArray* selectedURL = [oPanel URLs];
 
         for ( NSURL* url in selectedURL )
         {
