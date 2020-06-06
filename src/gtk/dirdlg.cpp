@@ -71,7 +71,8 @@ bool wxDirDialog::Create(wxWindow* parent,
 {
     m_message = title;
 
-    wxASSERT( !( HasFlag(wxDD_MULTIPLE) && HasFlag(wxDD_CHANGE_DIR) ) );
+    wxASSERT_MSG( !( (style & wxDD_MULTIPLE) && (style & wxDD_CHANGE_DIR) ),
+                  "wxDD_CHANGE_DIR can't be used together with wxDD_MULTIPLE" );
 
     parent = GetParentForModalDialog(parent, style);
 

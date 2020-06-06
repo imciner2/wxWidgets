@@ -48,7 +48,8 @@ void wxDirDialog::Create(wxWindow *parent, const wxString& message,
 {
     m_parent = parent;
 
-    wxASSERT( !( HasFlag(wxDD_MULTIPLE) && HasFlag(wxDD_CHANGE_DIR) ) );
+    wxASSERT_MSG( !( (style & wxDD_MULTIPLE) && (style & wxDD_CHANGE_DIR) ),
+                  "wxDD_CHANGE_DIR can't be used together with wxDD_MULTIPLE" );
 
     SetMessage(message);
     SetWindowStyle(style);
