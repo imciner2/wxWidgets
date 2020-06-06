@@ -1831,7 +1831,7 @@ void MyFrame::DirChooseMultiple(wxCommandEvent& WXUNUSED(event))
             msg += s;
         }
 
-        wxMessageDialog dialog2(this, msg, "Selected files");
+        wxMessageDialog dialog2(this, msg, "Selected directories");
         dialog2.ShowModal();
     }
 }

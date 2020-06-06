@@ -48,7 +48,7 @@ const char wxDirDialogNameStr[] = "wxDirCtrl";
     @style{wxDD_CHANGE_DIR}
            Change the current working directory to the directory chosen by the
            user.
-           @note This flag is ignored if the @c wxDD_MULTIPLE style is also used
+           @note This flag cannot be used with the @c wxDD_MULTIPLE style.
     @style{wxDD_MULTIPLE}
            Allow the user to select multiple directories.
            @since 3.1.4
@@ -72,9 +72,9 @@ const char wxDirDialogNameStr[] = "wxDirCtrl";
     @endcode
     instead of just using @c wxDD_DIR_MUST_EXIST style alone.
 
-    @remarks MacOS 10.11+ does not display a title bar on the dialog. Use @c SetMessage
+    @remarks MacOS 10.11+ does not display a title bar on the dialog. Use SetMessage()
              to change the string displayed to the user at the top of the dialog after creation.
-             The @c SetTitle method is provided for compatibility with pre-10.11 MacOS versions
+             The SetTitle() method is provided for compatibility with pre-10.11 MacOS versions
              that do still support displaying the title bar.
 
     @library{wxcore}
