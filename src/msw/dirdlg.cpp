@@ -192,7 +192,6 @@ int wxDirDialog::ShowModal()
     }
 
     // change current working directory if asked so
-    // but only if the dialog is single selection only
     if ( rc == wxID_OK && HasFlag(wxDD_CHANGE_DIR) )
         wxSetWorkingDirectory(m_path);
 
