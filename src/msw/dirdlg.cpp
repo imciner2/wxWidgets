@@ -119,11 +119,11 @@ wxDirDialog::wxDirDialog(wxWindow *parent,
     m_message = message;
     m_parent = parent;
 
+    wxASSERT_MSG( !( (style & wxDD_MULTIPLE) && (style & wxDD_CHANGE_DIR) ),
+                  "wxDD_CHANGE_DIR can't be used together with wxDD_MULTIPLE" );
+
     SetWindowStyle(style);
     SetPath(defaultPath);
-
-    wxASSERT_MSG( !( HasFlag(wxDD_MULTIPLE) && HasFlag(wxDD_CHANGE_DIR) ),
-                  "wxDD_CHANGE_DIR can't be used together with wxDD_MULTIPLE");
 }
 
 void wxDirDialog::SetPath(const wxString& path)
