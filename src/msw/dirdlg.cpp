@@ -148,7 +148,8 @@ void wxDirDialog::SetPath(const wxString& path)
 
 wxString wxDirDialog::GetPath() const
 {
-    wxCHECK_MSG(!HasFlag(wxDD_MULTIPLE), wxEmptyString, "GetPath called when wxDD_MULTIPLE defined");
+    wxCHECK_MSG( !HasFlag(wxDD_MULTIPLE), wxEmptyString,
+         "When using wxDD_MULTIPLE, must call GetPaths() instead" );
 
     return m_path;
 }
@@ -191,9 +192,7 @@ int wxDirDialog::ShowModal()
     }
 
     // change current working directory if asked so
-    // but only if the dialog is single selection only
-    if ( rc == wxID_OK &&
-         ( HasFlag(wxDD_CHANGE_DIR) && !HasFlag(wxDD_MULTIPLE) ) )
+    if ( rc == wxID_OK && HasFlag(wxDD_CHANGE_DIR) )
         wxSetWorkingDirectory(m_path);
 
     return rc;
@@ -284,9 +283,8 @@ int wxDirDialog::ShowIFileOpenDialog(WXHWND owner)
             wxLogApiError(wxS("IFileDialog::Show"), hr);
         }
     }
-    else
-    if ( GetPathsFromIFileOpenDialog(fileDialog, HasFlag(wxDD_MULTIPLE),
-                                     m_paths) )
+    else if ( GetPathsFromIFileOpenDialog(fileDialog, HasFlag(wxDD_MULTIPLE),
+                                          m_paths) )
     {
         if ( !HasFlag(wxDD_MULTIPLE) )
         {
