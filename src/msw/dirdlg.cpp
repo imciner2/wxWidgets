@@ -88,12 +88,16 @@ wxIMPLEMENT_CLASS(wxDirDialog, wxDialog);
 // private functions prototypes
 // ----------------------------------------------------------------------------
 
+#if wxUSE_IFILEOPENDIALOG
+
 // helper functions for wxDirDialog::ShowIFileOpenDialog()
 bool InitIFileOpenDialog(const wxString& message, const wxString& defaultPath,
                          bool multipleSelection, bool showHidden, wxCOMPtr<IFileOpenDialog>& fileDialog);
 bool GetPathsFromIFileOpenDialog(const wxCOMPtr<IFileOpenDialog>& fileDialog, bool multipleSelection,
                                  wxArrayString& paths);
 bool ConvertIShellItemToPath(const wxCOMPtr<IShellItem>& item, wxString& path);
+
+#endif // #if wxUSE_IFILEOPENDIALOG
 
 // callback used in wxDirDialog::ShowSHBrowseForFolder()
 static int CALLBACK BrowseCallbackProc(HWND hwnd, UINT uMsg, LPARAM lp,
@@ -299,8 +303,6 @@ int wxDirDialog::ShowIFileOpenDialog(WXHWND owner)
     return wxID_CANCEL;
 }
 
-#endif // wxUSE_IFILEOPENDIALOG
-
 // ----------------------------------------------------------------------------
 // private functions
 // ----------------------------------------------------------------------------
@@ -495,6 +497,8 @@ bool ConvertIShellItemToPath(const wxCOMPtr<IShellItem>& item, wxString& path)
 
     return true;
 }
+
+#endif // wxUSE_IFILEOPENDIALOG
 
 // callback used in wxDirDialog::ShowSHBrowseForFolder()
 static int CALLBACK
