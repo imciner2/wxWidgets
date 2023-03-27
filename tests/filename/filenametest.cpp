@@ -1046,3 +1046,46 @@ TEST_CASE("wxFileName::GetSizeSpecial", "[filename][linux][special-file]")
 }
 
 #endif // __LINUX__
+
+
+TEST_CASE("wxFileName::Permissions", "[filename]")
+{
+    wxFileName fn(wxFileName::CreateTempFileName("filenametest"));
+    REQUIRE( fn.IsOk() );
+    wxON_BLOCK_EXIT1( wxRemoveFile, fn.GetFullPath() );
+
+    const int userPermissionsMask = wxPOSIX_USER_READ|wxPOSIX_USER_EXECUTE|wxPOSIX_USER_WRITE;
+
+    // Test setting read/write permissions
+    int desiredPermissions = wxPOSIX_USER_READ|wxPOSIX_USER_EXECUTE|wxPOSIX_USER_WRITE;
+    fn.SetPermissions(desiredPermissions);
+    CHECK( wxIsReadable(fn.GetFullPath()) );
+    CHECK( wxIsWritable(fn.GetFullPath()) );
+    CHECK( wxIsExecutable(fn.GetFullPath()) );
+
+    // Test reading back these permissions
+    int permissions = fn.GetPermissions();
+    CHECK( (permissions & userPermissionsMask) == desiredPermissions );
+
+    // Test no write permissions
+    desiredPermissions = wxPOSIX_USER_READ|wxPOSIX_USER_EXECUTE;
+    fn.SetPermissions(desiredPermissions);
+    CHECK( wxIsReadable(fn.GetFullPath()) );
+    CHECK( !wxIsWritable(fn.GetFullPath()) );
+    CHECK( wxIsExecutable(fn.GetFullPath()) );
+
+    // Test reading back these permissions
+    permissions = fn.GetPermissions();
+    CHECK( (permissions & userPermissionsMask) == desiredPermissions );
+
+    // Test no read permissions
+    desiredPermissions = wxPOSIX_USER_EXECUTE;
+    fn.SetPermissions(desiredPermissions);
+    CHECK( !wxIsReadable(fn.GetFullPath()) );
+    CHECK( !wxIsWritable(fn.GetFullPath()) );
+    CHECK( wxIsExecutable(fn.GetFullPath()) );
+
+    // Test reading back these permissions
+    permissions = fn.GetPermissions();
+    CHECK( (permissions & userPermissionsMask) == desiredPermissions );
+}
