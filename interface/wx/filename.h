@@ -1225,7 +1225,7 @@ public:
         path.
 
         If this path isn't a symlink, then this function will return the current
-        path. If the path does not exist on disk, An empty wxFileName instance
+        path. If the path does not exist on disk, an empty wxFileName instance
         will be returned.
 
         @note This is only supported on Unix-like platforms (e.g. wxGTK, wxOSX),
