@@ -2624,6 +2624,31 @@ bool wxFileName::SetPermissions(int permissions)
     return wxChmod(GetFullPath(), permissions) == 0;
 }
 
+int wxFileName::GetPermissions()
+{
+    int retVal = -1;
+    int permissions = 0;
+    wxStructStat st;
+
+    // Get permissions for the actual link if we shouldn't follow the links
+    if ( m_dontFollowLinks &&
+            Exists(GetFullPath(), wxFILE_EXISTS_SYMLINK|wxFILE_EXISTS_NO_FOLLOW) )
+    {
+        retVal = wxLstat(GetFullPath(), &st);
+    }
+    else
+    {
+        retVal = wxStat(GetFullPath(), &st);
+    }
+
+    if ( retVal == 0 )
+        permissions = st.st_mode;
+    else
+        wxLogSysError(_("Failed to get file permissions"));
+
+    return permissions;
+}
+
 // Returns the native path for a file URL
 wxFileName wxFileName::URLToFileName(const wxString& url)
 {

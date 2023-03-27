@@ -813,6 +813,16 @@ public:
     wxString GetPathWithSep(wxPathFormat format = wxPATH_NATIVE) const;
 
     /**
+        Gets permissions for this file or directory.
+
+        @return The permissions, which is a combination of
+                ::wxPosixPermissions enum elements, 0 on failure.
+
+        @since 3.3.0
+    */
+    int GetPermissions();
+
+    /**
         Return the short form of the path (returns identity on non-Windows platforms).
     */
     wxString GetShortPath() const;

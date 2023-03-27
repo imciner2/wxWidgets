@@ -264,8 +264,8 @@ public:
     bool IsFileExecutable() const { return wxIsExecutable(GetFullPath()); }
     static bool IsFileExecutable(const wxString &path) { return wxFileExists(path) && wxIsExecutable(path); }
 
-        // set the file permissions to a combination of wxPosixPermissions enum
-        // values
+    // File permission interaction as a a combination of wxPosixPermissions enum values
+    int GetPermissions();
     bool SetPermissions(int permissions);
 
     // Returns the native path for a file URL
