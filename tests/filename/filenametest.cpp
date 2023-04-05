@@ -827,6 +827,68 @@ TEST_CASE("wxFileName::SameAs", "[filename]")
 
 #if defined(__UNIX__)
 
+TEST_CASE("wxFileName::ResolveSymlinks", "[filename],[symlink]")
+{
+    const wxString tmpdir(wxStandardPaths::Get().GetTempDir());
+
+    wxFileName tmpfn(wxFileName::DirName(tmpdir));
+
+    // Create a temporary directory
+#ifdef __VMS
+    wxString name = tmpdir + ".filenametestXXXXXX]";
+    mkdir( name.char_str() , 0222 );
+    wxString tempdir = name;
+#else
+    wxString name = tmpdir + "/filenametestXXXXXX";
+    wxString tempdir = wxString::From8BitData(mkdtemp(name.char_str()));
+    tempdir << wxFileName::GetPathSeparator();
+#endif
+    wxFileName tempdirfn(wxFileName::DirName(tempdir));
+    CHECK(tempdirfn.DirExists());
+
+    // Create a regular file in that dir, to act as a symlink target
+    wxFileName targetfn(wxFileName::CreateTempFileName(tempdir));
+    CHECK(targetfn.FileExists());
+
+    // Resolving a non-symlink will just return the same thing
+    INFO("Non-symlink didn't resolve to the same file");
+    CHECK( targetfn.ResolveLink() == targetfn );
+
+    // Create a symlink to that file
+    wxFileName linktofile(tempdir, "linktofile");
+    CHECK( symlink(targetfn.GetFullPath().c_str(), linktofile.GetFullPath().c_str()) == 0 );
+
+    // Test resolving the filename to the symlink
+    INFO("Failed to resolve symlink to file");
+    CHECK( linktofile.ResolveLink() == targetfn );
+
+    // Create a relative symlink to that file
+    wxFileName relativelinktofile(tempdir, "relativelinktofile");
+    wxString relativeFileName = "./" + targetfn.GetFullName();
+    CHECK( symlink(relativeFileName.c_str(), relativelinktofile.GetFullPath().c_str()) == 0 );
+    INFO("Failed to resolve relative symlink to absolute file path");
+    CHECK( relativelinktofile.ResolveLink() == targetfn );
+
+    // ... and another to the temporary directory
+    const wxString linktodirName(tempdir + "/linktodir");
+    wxFileName linktodirfn(linktodirName);
+    wxFileName linktodir(wxFileName::DirName(linktodirName));
+    CHECK( symlink(tmpfn.GetFullPath().c_str(), linktodirName.c_str()) == 0 );
+    INFO("Failed to resolve symlink to directory");
+    CHECK( linktodirfn.ResolveLink() == tmpfn );
+
+    // And symlinks to both of those symlinks
+    wxFileName linktofilelnk(tempdir, "linktofilelnk");
+    CHECK( symlink(linktofile.GetFullPath().c_str(), linktofilelnk.GetFullPath().c_str()) == 0 );
+    INFO("Failed to resolve symlink to file symlink");
+    CHECK( linktofilelnk.ResolveLink() == targetfn );
+
+    wxFileName linktodirlnk(tempdir, "linktodirlnk");
+    CHECK( symlink(linktodir.GetFullPath().c_str(), linktodirlnk.GetFullPath().c_str()) == 0 );
+    INFO("Failed to resolve symlink to directory symlink");
+    CHECK( linktodirlnk.ResolveLink() == tmpfn );
+}
+
 // Tests for functions that are changed by ShouldFollowLink()
 TEST_CASE("wxFileName::Symlinks", "[filename]")
 {
